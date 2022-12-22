@@ -1,0 +1,30 @@
+# RUN `docker compose down` BEFORE EDITING THIS FILE! https://stackoverflow.com/questions/42842277/docker-compose-down-default-network-error
+version: "3.9"  # optional since v1.27.0
+services:
+  db:
+    image: mysql:8-oracle
+    restart: unless-stopped
+    environment:
+        MYSQL_DATABASE: mydb
+        MYSQL_USER: user
+        MYSQL_PASSWORD: randompassword
+        MYSQL_ROOT_PASSWORD: randompassword
+    ports:
+        - 3306:3306
+    volumes:
+        - db_vol:/var/lib/mysql
+  phpmyadmin:
+    profiles: ["pma"]
+    image: phpmyadmin:latest
+    ports:
+        - 8081:80
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+       - 4318:4318
+       - 16686:16686
+volumes:
+  db_vol:
